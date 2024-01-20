@@ -64,7 +64,7 @@ int main(int arg, char *argv[]) {
     if (input_number_of_threads > omp_get_max_threads() ||
             input_number_of_threads < -1) {
         std::cerr << "Wrong number of threads";
-        strerror(1);
+        return 1;
     }
 
     FILE *file_in = fopen(argv[2], "r");
