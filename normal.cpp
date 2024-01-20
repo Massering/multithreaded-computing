@@ -4,6 +4,7 @@
 #include <iostream>
 #include <omp.h>
 #include <cstdio>
+#include <cmath>
 
 struct Point {
     double x = -1;
