@@ -61,6 +61,12 @@ int main(int arg, char *argv[]) {
     int input_number_of_threads = atoi(argv[1]);
     int number_of_threads;
 
+    if (input_number_of_threads > omp_get_max_threads() ||
+            input_number_of_threads < -1) {
+        std::cerr << "Wrong number of threads";
+        strerror(1);
+    }
+
     FILE *file_in = fopen(argv[2], "r");
     int N = 1e2;
     fscanf(file_in, "%i\n", &N);
@@ -69,6 +75,7 @@ int main(int arg, char *argv[]) {
     for (int i = 0; i < 3; i++) {
         fscanf(file_in, "(%lf %lf %lf)\n", &p[i].x, &p[i].y, &p[i].z);
     }
+    fclose(file_in);
 
     double tstart = omp_get_wtime();
 
@@ -125,6 +132,7 @@ int main(int arg, char *argv[]) {
 
     FILE *file_out = fopen(argv[3], "w");
     std::fprintf(file_out, "%g %g\n", S, H * H * H * 4 / 3);
+    fclose(file_out);
 
     std::printf("Time (%i thread(s)): %g ms\n", number_of_threads, (tend - tstart) * 1000);
 
