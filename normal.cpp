@@ -5,6 +5,7 @@
 #include <omp.h>
 #include <cstdio>
 #include <cmath>
+#include <fstream>
 
 struct Point {
     double x = -1;
@@ -130,9 +131,11 @@ int main(int arg, char *argv[]) {
 
     double tend = omp_get_wtime();
 
-    FILE *file_out = fopen(argv[3], "w");
-    std::fprintf(file_out, "%g %g \n", S, H * H * H * 4 / 3);
-    fclose(file_out);
+    std::ofstream fout(argv[3]);
+    fout << S << " " << H * H * H * 4 / 3 << std::endl;
+//    FILE *file_out = fopen(argv[3], "w");
+//    std::fprintf(file_out, "%g %g \n", S, H * H * H * 4 / 3);
+//    fclose(file_out);
 
     std::printf("Time (%i thread(s)): %g ms\n", number_of_threads, (tend - tstart) * 1000);
 
