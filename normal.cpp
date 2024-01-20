@@ -127,8 +127,5 @@ int main(int arg, char *argv[]) {
 
     std::printf("Time (%i thread(s)): %g ms\n", number_of_threads, (tend - tstart) * 1000);
 
-//    FILE *file_stat = fopen("stat.txt", "w");
-//    std::fprintf(file_stat, "%g", (tend - tstart) * 1000);
-
     return 0;
 }
