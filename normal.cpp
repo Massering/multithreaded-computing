@@ -131,7 +131,7 @@ int main(int arg, char *argv[]) {
     double tend = omp_get_wtime();
 
     FILE *file_out = fopen(argv[3], "w");
-    std::fprintf(file_out, "%g %g\n", S, H * H * H * 4 / 3);
+    std::fprintf(file_out, "%g %g \n", S, H * H * H * 4 / 3);
     fclose(file_out);
 
     std::printf("Time (%i thread(s)): %g ms\n", number_of_threads, (tend - tstart) * 1000);
