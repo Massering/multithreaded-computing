@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cmath>
 #include <fstream>
+#include <iomanip>
 
 struct Point {
     double x = -1;
@@ -36,13 +37,22 @@ double scale_mul(Vector v1, Vector v2) {
 }
 
 double height_of_octaedr(Point *p) {
+    double muls[3];
+    double lens[3];
     for (int i = 0; i < 3; i++) {
         Vector v1 = {p[i], p[(i + 1) % 3]};
         Point mid = {(v1.a.x + v1.b.x) / 2, (v1.a.y + v1.b.y) / 2, (v1.a.z + v1.b.z) / 2};
         Vector v2 = {p[(i + 2) % 3], mid};
-        if (abs(scale_mul(v1, v2)) < 0.0001) {
-            return length(v1) / 2;
+
+        muls[i] = abs(scale_mul(v1, v2));
+        lens[i] = length(v1) / 2;
         }
+    if (muls[0] < muls[1] and muls[0] < muls[2]) {
+        return lens[0];
+    } else if (muls[1] < muls[0] and muls[1] < muls[2]) {
+        return lens[1];
+    } else {
+        return lens[2];
     }
 }
 
@@ -101,7 +111,7 @@ int main(int arg, char *argv[]) {
         }
     } else {
         if (input_number_of_threads == 0) {
-            number_of_threads = omp_get_num_threads();
+            number_of_threads = omp_get_max_threads();
         } else {
             number_of_threads = input_number_of_threads;
         }
@@ -110,13 +120,15 @@ int main(int arg, char *argv[]) {
         for (int i = 0; i < number_of_threads; i++) {
             a[i] = 0;
         }
+        double x, y, z;
+        unsigned long long t;
 
-#pragma omp parallel for schedule(guided, 200)
+#pragma omp parallel for schedule(guided, 200) private(x, y, z, t)
         for (int i = 0; i < N; i++) {
-            unsigned long long t = i;
-            double x = rand_float(t) * H;
-            double y = rand_float(t) * H;
-            double z = rand_float(t) * H;
+            t = i;
+            x = rand_float(t) * H;
+            y = rand_float(t) * H;
+            z = rand_float(t) * H;
 
             if (abs(x) + abs(y) + abs(z) <= H) {
                 a[omp_get_thread_num()]++;
@@ -133,11 +145,8 @@ int main(int arg, char *argv[]) {
 
     std::ofstream fout(argv[3]);
     fout << S << " " << H * H * H * 4 / 3 << std::endl;
-//    FILE *file_out = fopen(argv[3], "w");
-//    std::fprintf(file_out, "%g %g \n", S, H * H * H * 4 / 3);
-//    fclose(file_out);
 
-    std::printf("Time (%i thread(s)): %g ms\n", number_of_threads, (tend - tstart) * 1000);
+    printf("Time (%i thread(s)): %g ms\n", number_of_threads, (tend - tstart) * 1000);
 
     return 0;
 }
